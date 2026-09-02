@@ -21,7 +21,7 @@ const businessProfile = {
 
   // CONTACT INFORMATION
   phone: "+977 9855017454",
-  whatsapp: "9779855017454", // Formatted with full country code for instant wa.me messaging
+  whatsapp: "9779855017454", 
   email: "rajbhandariparishar@gmail.com",
   website: "https://parishar-rajbhandari-profile.vercel.app",
 
@@ -54,7 +54,7 @@ const businessProfile = {
 };
 
 /* =====================================================
-   SAFE DOM HELPERS (PREVENTS SCRIPT CRASHES)
+   SAFE DOM HELPERS
 ===================================================== */
 
 const $ = (selector) => document.querySelector(selector);
@@ -85,7 +85,6 @@ function digitsOnly(value) {
 
 function formatWhatsAppNumber(value) {
   let cleaned = String(value || "").replace(/\D/g, "");
-  // Prepend Nepal country code if user only entered a 10-digit local number
   if (cleaned.length === 10 && cleaned.startsWith("98")) {
     cleaned = "977" + cleaned;
   }
@@ -135,14 +134,12 @@ function socialEntries(profile) {
 function renderProfile(profile) {
   document.title = `${profile.name} | ${profile.company || "Business Profile"}`;
 
-  // Basic Details
   setText("#name", profile.name);
   setText("#title", profile.title);
   setText("#company", profile.company);
   setText("#tagline", profile.tagline);
   setText("#description", profile.description);
 
-  // Contact Details Text
   setText("#phoneValue", profile.phone);
   setText("#emailValue", profile.email);
   setText("#websiteValue", String(profile.website || "").replace(/^https?:\/\//, ""));
@@ -150,7 +147,6 @@ function renderProfile(profile) {
   setText("#locationText", profile.address);
   setText("#footerCompany", profile.company || profile.name);
 
-  /* PROFILE & LOGO IMAGES */
   const profileImage = $("#profileImage");
   if (profileImage) {
     profileImage.src = profile.profileImage || "";
@@ -174,7 +170,6 @@ function renderProfile(profile) {
     logoImage.alt = `${profile.company} Logo`;
   }
 
-  /* TELEPHONE LINKS */
   const tel = digitsOnly(profile.phone);
   const telUrl = tel ? `tel:${tel}` : "#";
   setHref("#callButton", telUrl);
@@ -182,7 +177,6 @@ function renderProfile(profile) {
   setHref("#ctaCallButton", telUrl);
   setHref("#mobileCall", telUrl);
 
-  /* WHATSAPP LINKS */
   const wa = formatWhatsAppNumber(profile.whatsapp || profile.phone);
   const waUrl = wa
     ? `https://wa.me/${wa}?text=${encodeURIComponent(profile.whatsappMessage || "")}`
@@ -192,7 +186,6 @@ function renderProfile(profile) {
   setHref("#ctaWhatsAppButton", waUrl);
   setHref("#mobileWhatsApp", waUrl);
 
-  /* EMAIL & WEBSITE LINKS */
   const mailUrl = profile.email ? `mailto:${profile.email}` : "#";
   setHref("#emailCard", mailUrl);
   setHref("#emailButton", mailUrl);
@@ -201,7 +194,6 @@ function renderProfile(profile) {
   setHref("#websiteCard", webUrl);
   setHref("#websiteButton", webUrl);
 
-  /* LOCATION HANDLERS */
   const mapsHandler = (e) => {
     if (e) e.preventDefault();
     const url = getMapsUrl(profile);
@@ -215,16 +207,13 @@ function renderProfile(profile) {
   setClick("#mapsButton", mapsHandler);
   setClick("#locationCard", mapsHandler);
 
-  /* VISIBILITY TOGGLES */
   hideIfEmpty("contactSection", profile.phone || profile.email || profile.website);
   hideIfEmpty("locationSection", profile.address || profile.mapsUrl);
 
-  /* SUB-RENDERERS */
   renderServices(profile.services);
   renderSocials(profile);
   renderBusinessCard(profile);
 
-  /* SEO METADATA */
   const ogImage = $("#ogImage");
   if (ogImage && profile.profileImage) {
     ogImage.setAttribute("content", profile.profileImage);
@@ -238,10 +227,6 @@ function renderProfile(profile) {
     );
   }
 }
-
-/* =====================================================
-   RENDER SERVICES & SOCIALS
-===================================================== */
 
 function renderServices(services = []) {
   const section = $("#servicesSection");
@@ -257,11 +242,11 @@ function renderServices(services = []) {
 
   if (section) section.hidden = false;
 
-  services.forEach((service, index) => {
+  services.forEach((service) => {
     const item = document.createElement("div");
     item.className = "service-item";
     item.innerHTML = `
-      <span class="service-number">${String("-")}</span>
+      <span class="service-number">-</span>
       <span class="service-name"></span>
     `;
     item.querySelector(".service-name").textContent = service;
@@ -320,7 +305,7 @@ function renderBusinessCard(profile) {
 }
 
 /* =====================================================
-   VCARD GENERATION & SAVING
+   VCARD GENERATION & SAVING (FIXED PARSER & ENCODING)
 ===================================================== */
 
 function escapeVCard(value) {
@@ -346,7 +331,7 @@ function foldVCardLine(line) {
 }
 
 async function imageToBase64Data(imageUrl) {
-  if (!imageUrl) return { base64: "", mimeType: "" };
+  if (!imageUrl) return { base64: "", type: "" };
 
   try {
     const response = await fetch(imageUrl, { cache: "no-cache" });
@@ -358,16 +343,19 @@ async function imageToBase64Data(imageUrl) {
       reader.onload = () => {
         const result = String(reader.result || "");
         const comma = result.indexOf(",");
+        let ext = (blob.type || "").split("/")[1] || "JPEG";
+        if (ext.toLowerCase() === "jpg") ext = "JPEG";
+
         resolve({
           base64: comma >= 0 ? result.slice(comma + 1) : "",
-          mimeType: blob.type || "image/jpeg"
+          type: ext.toUpperCase()
         });
       };
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
   } catch {
-    return { base64: "", mimeType: "" };
+    return { base64: "", type: "" };
   }
 }
 
@@ -381,11 +369,12 @@ async function generateVCard(profile) {
     profile.website && `item4.URL:${escapeVCard(profile.website)}\r\nitem4.X-ABLabel:Website`
   ].filter(Boolean);
 
+  // Correct vCard 3.0 photo attribute format
   const photoLine = photo.base64
-    ? `PHOTO;ENCODING=b;TYPE=${(photo.mimeType.split("/")[1] || "jpeg").toUpperCase()}:${photo.base64}`
+    ? `PHOTO;TYPE=${photo.type};ENCODING=b:${photo.base64}`
     : "";
 
-  const raw = [
+  const lines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
     `FN:${escapeVCard(profile.name)}`,
@@ -401,11 +390,9 @@ async function generateVCard(profile) {
     ...socialLines,
     photoLine,
     "END:VCARD"
-  ]
-    .filter(Boolean)
-    .join("\r\n");
+  ].filter(Boolean);
 
-  return raw.split("\r\n").map(foldVCardLine).join("\r\n");
+  return lines.map(foldVCardLine).join("\r\n");
 }
 
 function downloadBlob(blob, filename) {
@@ -432,14 +419,12 @@ async function saveContact() {
       b.innerHTML = `<span>Preparing...</span>`;
     });
 
-    const vcard = await generateVCard(businessProfile);
-    const file = new File(
-      [vcard],
-      safeFilename(businessProfile.name, ".vcf"),
-      { type: "text/vcard;charset=utf-8" }
-    );
+    const vcardString = await generateVCard(businessProfile);
+    const fileName = safeFilename(businessProfile.name, ".vcf");
+    const blob = new Blob([vcardString], { type: "text/vcard;charset=utf-8;" });
+    const file = new File([blob], fileName, { type: "text/vcard;charset=utf-8;" });
 
-    // Native File Share (Mobile Devices)
+    // Web Share API support check (Mobile Native Contacts Integration)
     if (navigator.share && navigator.canShare) {
       let canShareFile = false;
       try {
@@ -450,18 +435,17 @@ async function saveContact() {
 
       if (canShareFile) {
         await navigator.share({
-          title: `${businessProfile.name} Contact`,
-          text: `Save ${businessProfile.name} to your contacts.`,
+          title: businessProfile.name,
           files: [file]
         });
-        showToast("Contact shared. Select Contacts app to save.");
+        showToast("Contact shared. Open with Contacts to save.");
         return;
       }
     }
 
-    // Direct Download Fallback
-    downloadBlob(file, safeFilename(businessProfile.name, ".vcf"));
-    showToast("Contact file downloaded. Open it to save.");
+    // Direct Browser Download Fallback
+    downloadBlob(blob, fileName);
+    showToast("Contact file downloaded. Tap file to save.");
   } catch (error) {
     if (error?.name !== "AbortError") {
       showToast("Could not export contact file.");
@@ -541,15 +525,12 @@ function showToast(message) {
 ===================================================== */
 
 function setupInteractions() {
-  // Main Save Contact Buttons
   setClick("#saveContactButton", saveContact);
   setClick("#mobileSaveContact", saveContact);
 
-  // Share Buttons
   setClick("#shareProfileButton", shareProfile);
   setClick("#shareProfileTop", shareProfile);
 
-  // Business Card Actions
   setClick("#downloadCardButton", () => {
     if (businessProfile.businessCardImage) {
       const a = document.createElement("a");
@@ -559,7 +540,6 @@ function setupInteractions() {
     }
   });
 
-  // Copy Buttons
   document.querySelectorAll("[data-copy-target]").forEach((button) => {
     button.addEventListener("click", async (event) => {
       event.preventDefault();
@@ -571,7 +551,6 @@ function setupInteractions() {
     });
   });
 
-  // Read More Toggle
   const aboutCard = document.querySelector(".about-panel");
   const readMore = $("#readMoreButton");
 
