@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <meta name="theme-color" content="#f3efe7" />
+  <meta name="description" content="Premium digital business profile." />
+
+  <meta property="og:title" content="Business Profile" />
+  <meta property="og:description" content="Connect, call, message and save this business profile." />
+  <meta property="og:type" content="profile" />
+  <meta property="og:image" content="" id="ogImage" />
+
+  <title>Business Profile</title>
+
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23231f1a'/%3E%3Ctext x='50' y='65' text-anchor='middle' font-size='48' fill='%23c5a878'%3EB%3C/text%3E%3C/svg%3E"
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <div class="site-frame">
+
+    <main class="profile">
+
+      <!-- =========================================
+           HEADER / HERO
+      ========================================== -->
+
+      <section class="hero">
+
+        <div class="hero-meta">
+          <span class="brand">DIGITAL PROFILE</span>
+
+          <button
+            id="shareProfileTop"
+            class="minimal-share"
+            type="button"
+            aria-label="Share profile"
+          >
+            Share ↗
+          </button>
+        </div>
+
+        <div class="hero-layout">
+
+          <!-- IMAGE COLUMN -->
+          <div class="portrait-column">
+
+            <div class="portrait-frame">
+              <img
+                id="profileImage"
+                class="profile-avatar"
+                src=""
+                alt="Profile photo"
+              />
+            </div>
+
+            <div class="portrait-caption">
+              <span>PROFILE</span>
+              <span class="caption-line"></span>
+            </div>
+
+          </div>
+
+          <!-- INTRO COLUMN -->
+          <div class="intro-column">
+
+            <span class="eyebrow">
+              BUSINESS • CONTACT • CONNECT
+            </span>
+
+            <h1 id="name">
+              Business Owner
+            </h1>
+
+            <div class="position">
+              <span id="title"></span>
+              <span class="position-divider">—</span>
+              <span id="company"></span>
+            </div>
+
+            <p id="tagline" class="tagline"></p>
+
+            <div class="hero-actions">
+
+              <a
+                id="callButton"
+                class="primary-action"
+                href="#"
+              >
+                <span>Call</span>
+                <span>→</span>
+              </a>
+
+              <a
+                id="whatsappButton"
+                class="secondary-action"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>WhatsApp</span>
+                <span>↗</span>
+              </a>
+
+              <button
+                id="saveContactButton"
+                class="secondary-action"
+                type="button"
+              >
+                <span>Save Contact</span>
+                <span>＋</span>
+              </button>
+
+            </div>
+
+            <div class="hero-note">
+              Tap any detail below to connect directly.
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- =========================================
+           CONTACT STRIP
+      ========================================== -->
+
+      <section
+        class="contact-section"
+        id="contactSection"
+      >
+
+        <div class="section-label">
+          <span>01</span>
+          CONTACT
+        </div>
+
+        <div class="contact-list">
+
+          <a
+            class="contact-row"
+            id="phoneCard"
+            href="#"
+          >
+            <div class="contact-type">
+              PHONE
+            </div>
+
+            <div class="contact-value">
+              <strong id="phoneValue"></strong>
+            </div>
+
+            <button
+              class="row-copy"
+              type="button"
+              data-copy-target="phoneValue"
+              aria-label="Copy phone number"
+            >
+              Copy
+            </button>
+
+            <span class="row-arrow">↗</span>
+          </a>
+
+
+          <a
+            class="contact-row"
+            id="emailCard"
+            href="#"
+          >
+            <div class="contact-type">
+              EMAIL
+            </div>
+
+            <div class="contact-value">
+              <strong id="emailValue"></strong>
+            </div>
+
+            <button
+              class="row-copy"
+              type="button"
+              data-copy-target="emailValue"
+              aria-label="Copy email"
+            >
+              Copy
+            </button>
+
+            <span class="row-arrow">↗</span>
+          </a>
+
+
+          <a
+            class="contact-row"
+            id="websiteCard"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="contact-type">
+              WEBSITE
+            </div>
+
+            <div class="contact-value">
+              <strong id="websiteValue"></strong>
+            </div>
+
+            <span class="row-arrow">↗</span>
+          </a>
+
+
+          <button
+            class="contact-row location-row"
+            id="locationCard"
+            type="button"
+          >
+            <div class="contact-type">
+              LOCATION
+            </div>
+
+            <div class="contact-value">
+              <strong id="addressValue"></strong>
+            </div>
+
+            <span class="row-arrow">↗</span>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================================
+           ABOUT
+      ========================================== -->
+
+      <section
+        class="content-section"
+        id="aboutSection"
+      >
+
+        <div class="section-label">
+          <span>02</span>
+          ABOUT
+        </div>
+
+        <div class="about-layout">
+
+          <h2>
+            A closer look
+          </h2>
+
+          <div class="about-copy">
+
+            <p id="description"></p>
+
+            <button
+              id="readMoreButton"
+              class="read-more"
+              type="button"
+              hidden
+            >
+              Read More →
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================================
+           LOCATION
+      ========================================== -->
+
+      <section
+        class="content-section location-section"
+        id="locationSection"
+      >
+
+        <div class="section-label">
+          <span>03</span>
+          VISIT
+        </div>
+
+        <div class="location-layout">
+
+          <div>
+            <span class="eyebrow">
+              BUSINESS LOCATION
+            </span>
+
+            <h2>
+              Come by
+            </h2>
+
+            <p id="locationText"></p>
+          </div>
+
+          <button
+            id="mapsButton"
+            class="location-button"
+            type="button"
+          >
+            Open Google Maps
+            <span>↗</span>
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================================
+           SERVICES
+      ========================================== -->
+
+      <section
+        class="content-section"
+        id="servicesSection"
+      >
+
+        <div class="section-label">
+          <span>04</span>
+          EXPERTISE
+        </div>
+
+        <div class="section-intro">
+          <h2>
+            What we do
+          </h2>
+
+          <p>
+            Selected services and areas of expertise.
+          </p>
+        </div>
+
+        <div
+          class="services-list"
+          id="servicesGrid"
+        ></div>
+
+      </section>
+
+
+      <!-- =========================================
+           SOCIAL
+      ========================================== -->
+
+      <section
+        class="content-section"
+        id="socialSection"
+      >
+
+        <div class="section-label">
+          <span>05</span>
+          SOCIAL
+        </div>
+
+        <div class="social-heading">
+          <h2>
+            Stay connected
+          </h2>
+        </div>
+
+        <div
+          class="social-list"
+          id="socialGrid"
+        ></div>
+
+      </section>
+
+
+      <!-- =========================================
+           BUSINESS CARD
+      ========================================== -->
+
+      <section
+        class="content-section card-section"
+        id="businessCardSection"
+      >
+
+        <div class="section-label">
+          <span>06</span>
+          BUSINESS CARD
+        </div>
+
+        <div class="physical-card-layout">
+
+          <div class="physical-card-copy">
+
+            <span class="eyebrow">
+              DIGITAL VISITING CARD
+            </span>
+
+            <h2>
+              Keep the details<br />
+              close at hand.
+            </h2>
+
+            <p>
+              Save or share the original business card image.
+            </p>
+
+            <div class="business-card-actions">
+
+              <button
+                id="downloadCardButton"
+                class="primary-action"
+                type="button"
+              >
+                <span>Save Card</span>
+                <span>↓</span>
+              </button>
+
+              <button
+                id="shareCardButton"
+                class="secondary-action"
+                type="button"
+              >
+                <span>Share</span>
+                <span>↗</span>
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="business-card-preview">
+
+            <div class="card-shadow"></div>
+
+            <img
+              id="businessCardPreview"
+              src=""
+              alt="Business visiting card"
+            />
+
+          </div>
+
+        </div>
+
+        <p class="microcopy">
+          Original business-card artwork is displayed without modification.
+        </p>
+
+      </section>
+
+
+      <!-- =========================================
+           CTA
+      ========================================== -->
+
+      <section class="closing-section">
+
+        <div class="closing-copy">
+
+          <span class="eyebrow">
+            LET'S TALK
+          </span>
+
+          <h2>
+            Have a project<br />
+            in mind?
+          </h2>
+
+          <p>
+            Reach out directly using your preferred method.
+          </p>
+
+        </div>
+
+        <div class="closing-actions">
+
+          <a
+            id="ctaCallButton"
+            class="primary-action"
+            href="#"
+          >
+            Call Now
+            <span>→</span>
+          </a>
+
+          <a
+            id="ctaWhatsAppButton"
+            class="secondary-action"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp
+            <span>↗</span>
+          </a>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================================
+           FOOTER
+      ========================================== -->
+
+      <footer class="footer">
+
+        <div class="footer-left">
+
+          <span class="footer-title">
+            DIGITAL BUSINESS PROFILE
+          </span>
+
+          <span id="footerCompany"></span>
+
+        </div>
+
+        <button
+          id="shareProfileButton"
+          class="footer-share"
+          type="button"
+        >
+          Share Profile ↗
+        </button>
+
+      </footer>
+
+    </main>
+
+  </div>
+
+
+  <!-- MOBILE ACTION BAR -->
+
+  <nav class="mobile-bar">
+
+    <a
+      id="mobileCall"
+      class="mobile-action"
+      href="#"
+    >
+      <span>☎</span>
+      <small>Call</small>
+    </a>
+
+    <a
+      id="mobileWhatsApp"
+      class="mobile-action"
+      href="#"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <span>◉</span>
+      <small>WhatsApp</small>
+    </a>
+
+    <button
+      id="mobileSaveContact"
+      class="mobile-action mobile-save"
+      type="button"
+    >
+      <span>＋</span>
+      <small>Save</small>
+    </button>
+
+  </nav>
+
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
+
