@@ -294,7 +294,11 @@ function renderBusinessCard(profile) {
    VCARD GENERATION & SAVING (SYNCHRONOUS FIX)
 ===================================================== */
 
-// Global cache for the photo to ensure saveContact runs synchronously 
+/* =====================================================
+   VCARD GENERATION & SAVING (FAST & OPTIMIZED)
+===================================================== */
+
+// Global cache for the photo
 let cachedVCardPhoto = { base64: "", type: "" };
 
 async function preloadVCardPhoto() {
@@ -332,18 +336,17 @@ function escapeVCard(value) {
     .replace(/,/g, "\\,");
 }
 
+// FIXED: Fast O(N) line-folding using string slicing
 function foldVCardLine(line) {
-  const max = 72;
-  const chars = Array.from(line);
-  const lines = [];
-  while (chars.length > max) {
-    lines.push(chars.splice(0, max).join(""));
+  if (!line || line.length <= 72) return line;
+  
+  const chunks = [];
+  for (let i = 0; i < line.length; i += 72) {
+    chunks.push(line.slice(i, i + 72));
   }
-  if (chars.length) lines.push(chars.join(""));
-  return lines.join("\r\n ");
+  return chunks.join("\r\n ");
 }
 
-// Removed async keyword to prevent gesture loss
 function generateVCard(profile) {
   const socialLines = [
     profile.instagram && `item1.URL:${escapeVCard(profile.instagram)}\r\nitem1.X-ABLabel:Instagram`,
@@ -387,24 +390,21 @@ function downloadBlob(blob, filename) {
   document.body.appendChild(anchor);
   anchor.click();
   
-  // Cleanup safely
   setTimeout(() => {
     document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
   }, 3000);
 }
 
-// Completely Synchronous saveContact implementation
 function saveContact() {
   try {
     const vcardString = generateVCard(businessProfile);
     const fileName = safeFilename(businessProfile.name, ".vcf");
     
-    // Create Blob directly and force a native download
-    const blob = new Blob([vcardString], { type: "text/vcard" });
+    const blob = new Blob([vcardString], { type: "text/vcard;charset=utf-8" });
     downloadBlob(blob, fileName);
     
-    showToast("Contact file downloaded. Open to save.");
+    showToast("Contact file downloaded.");
   } catch (error) {
     showToast("Could not export contact file.");
   }
