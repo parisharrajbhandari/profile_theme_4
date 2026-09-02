@@ -1,63 +1,61 @@
 /*
-  NFC DIGITAL BUSINESS PROFILE
-  ---------------------------------------
-  Edit only the `businessProfile` object
-  to create a new professional profile.
+=========================================================
+PREMIUM DIGITAL BUSINESS PROFILE (FIXED & IMPROVED)
+---------------------------------------------------------
 */
 
 const businessProfile = {
-  slug: "parishar-rajbhandari",
 
+  // BASIC INFORMATION
+  slug: "parishar-rajbhandari",
   name: "Parishar Rajbhandari",
   title: "Manager",
   company: "Hamro Trading Concern Pvt. Ltd.",
-
   profileImage: "assets/profile/parishar.jpeg",
   logo: "assets/logos/company_logo.png",
 
+  // INTRODUCTION
   tagline: "Decor your space.",
-
   description:
-    "We provide premium range of Curtains, carpets, vinyl parquets, laminate parquets, mattress, rugs etc to decorate your home and office.",
+    "We provide a premium range of Curtains, Carpets, Vinyl Parquets, Laminate Parquets, Mattresses, Rugs, and custom home/office interior solutions.",
 
+  // CONTACT INFORMATION
   phone: "+977 9855017454",
-  whatsapp: "9855017454",
+  whatsapp: "9779855017454", 
   email: "rajbhandariparishar@gmail.com",
   website: "https://parishar-rajbhandari-profile.vercel.app",
 
+  // LOCATION
   address: "Chitwan, Nepal",
-  
+  mapsUrl: "https://maps.app.goo.gl/oAwfcawXmEtwf24k6",
 
+  // SOCIAL MEDIA
   instagram: "https://www.instagram.com/parishar_rajbhandari_/?hl=en",
   facebook: "https://www.facebook.com/parishar.rajbhandari.7",
   linkedin: "https://www.linkedin.com/in/parishar-rajbhandari-00531541b/",
   youtube: "",
   tiktok: "",
 
+  // WHATSAPP DEFAULT MESSAGE
   whatsappMessage:
-    "Hello, I found your business profile through your NFC card and would like to know more about your services.",
+    "Hello Parishar, I came across your digital profile and would like to inquire about your interior decor products and services.",
 
+  // SERVICES
   services: [
-    "Premium Curtains",
-    "Carpets and Parquets",
-    "Installation Services",
-    "Stitching Service"
+    "Premium Curtains & Drapery",
+    "Carpets, Rugs & Vinyl/Laminate Parquet",
+    "Custom Mattress & Furnishings",
+    "Professional Stitching & Installation"
   ],
 
-  /*
-    IMPORTANT:
-    This is the EXISTING visiting-card image.
-    The app downloads/shares this exact file.
-    It does NOT generate or redraw a card.
-  */
+  // MEDIA & VCARD
   businessCardImage: "assets/business-cards/business_card.png",
-
-  /*
-    Optional: used for vCard PHOTO.
-    Keep this as a same-origin/local image when possible.
-  */
-  vcardPhoto: "assets/profile/business_card.jpg"
+  vcardPhoto: "assets/profile/parishar.jpeg"
 };
+
+/* =====================================================
+   SAFE DOM HELPERS
+===================================================== */
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -66,25 +64,31 @@ function setText(selector, value) {
   if (el) el.textContent = value || "";
 }
 
+function setHref(selector, url) {
+  const el = $(selector);
+  if (el) el.href = url || "#";
+}
+
+function setClick(selector, handler) {
+  const el = $(selector);
+  if (el) el.onclick = handler;
+}
+
 function hideIfEmpty(id, value) {
   const el = document.getElementById(id);
-  if (!el) return;
-  el.hidden = !value;
+  if (el) el.hidden = !value;
 }
 
 function digitsOnly(value) {
   return String(value || "").replace(/[^\d+]/g, "");
 }
 
-function whatsappNumber(value) {
-  return String(value || "").replace(/\D/g, "");
-}
-
-function mapsUrl(profile) {
-  if (profile.address) {
-    return `https://maps.app.goo.gl/oAwfcawXmEtwf24k6`;
+function formatWhatsAppNumber(value) {
+  let cleaned = String(value || "").replace(/\D/g, "");
+  if (cleaned.length === 10 && cleaned.startsWith("98")) {
+    cleaned = "977" + cleaned;
   }
-  return "";
+  return cleaned;
 }
 
 function safeFilename(name, suffix) {
@@ -98,6 +102,21 @@ function safeFilename(name, suffix) {
   return `${base || "business-profile"}${suffix}`;
 }
 
+/* =====================================================
+   MAPS & SOCIAL UTILITIES
+===================================================== */
+
+function getMapsUrl(profile) {
+  if (profile.mapsUrl) return profile.mapsUrl;
+  if (profile.address) {
+    return (
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent(profile.address)
+    );
+  }
+  return "";
+}
+
 function socialEntries(profile) {
   return [
     { key: "instagram", label: "Instagram", icon: "◎", url: profile.instagram },
@@ -105,8 +124,12 @@ function socialEntries(profile) {
     { key: "linkedin", label: "LinkedIn", icon: "in", url: profile.linkedin },
     { key: "youtube", label: "YouTube", icon: "▶", url: profile.youtube },
     { key: "tiktok", label: "TikTok", icon: "♪", url: profile.tiktok }
-  ].filter(item => item.url);
+  ].filter((item) => Boolean(item.url));
 }
+
+/* =====================================================
+   RENDER PROFILE CONTENT & LINKS
+===================================================== */
 
 function renderProfile(profile) {
   document.title = `${profile.name} | ${profile.company || "Business Profile"}`;
@@ -115,65 +138,90 @@ function renderProfile(profile) {
   setText("#title", profile.title);
   setText("#company", profile.company);
   setText("#tagline", profile.tagline);
+  setText("#description", profile.description);
+
   setText("#phoneValue", profile.phone);
   setText("#emailValue", profile.email);
-  setText("#websiteValue", profile.website.replace(/^https?:\/\//, ""));
+  setText("#websiteValue", String(profile.website || "").replace(/^https?:\/\//, ""));
   setText("#addressValue", profile.address);
   setText("#locationText", profile.address);
-  setText("#description", profile.description);
   setText("#footerCompany", profile.company || profile.name);
 
   const profileImage = $("#profileImage");
-  profileImage.src = profile.profileImage;
-  profileImage.alt = `${profile.name} profile photo`;
-  profileImage.onerror = () => {
-    profileImage.src =
-      "data:image/svg+xml;charset=UTF-8," +
-      encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600">
-          <rect width="100%" height="100%" fill="#202630"/>
-          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-            fill="#dfe5ec" font-size="120" font-family="Arial">${(profile.name || "B")[0]}</text>
-        </svg>`
-      );
-  };
+  if (profileImage) {
+    profileImage.src = profile.profileImage || "";
+    profileImage.alt = `${profile.name} profile photo`;
+    profileImage.onerror = () => {
+      const initial = (profile.name || "B").trim().charAt(0).toUpperCase();
+      profileImage.src =
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(`
+          <svg xmlns="http://www.w3.org/2000/svg" width="600" height="600">
+            <rect width="100%" height="100%" fill="#161310"/>
+            <text x="50%" y="53%" dominant-baseline="middle" text-anchor="middle" fill="#d8b36a" font-size="180" font-family="Arial">${initial}</text>
+          </svg>
+        `);
+    };
+  }
 
-  $("#callButton").href = `tel:${digitsOnly(profile.phone)}`;
-  $("#phoneCard").href = `tel:${digitsOnly(profile.phone)}`;
-  $("#ctaCallButton").href = `tel:${digitsOnly(profile.phone)}`;
-  $("#mobileCall").href = `tel:${digitsOnly(profile.phone)}`;
+  const logoImage = $("#companyLogo");
+  if (logoImage && profile.logo) {
+    logoImage.src = profile.logo;
+    logoImage.alt = `${profile.company} Logo`;
+  }
 
-  const wa = whatsappNumber(profile.whatsapp);
+  const tel = digitsOnly(profile.phone);
+  const telUrl = tel ? `tel:${tel}` : "#";
+  setHref("#callButton", telUrl);
+  setHref("#phoneCard", telUrl);
+  setHref("#ctaCallButton", telUrl);
+  setHref("#mobileCall", telUrl);
+
+  const wa = formatWhatsAppNumber(profile.whatsapp || profile.phone);
   const waUrl = wa
     ? `https://wa.me/${wa}?text=${encodeURIComponent(profile.whatsappMessage || "")}`
-    : "";
+    : "#";
 
-  $("#whatsappButton").href = waUrl || "#";
-  $("#ctaWhatsAppButton").href = waUrl || "#";
-  $("#mobileWhatsApp").href = waUrl || "#";
+  setHref("#whatsappButton", waUrl);
+  setHref("#ctaWhatsAppButton", waUrl);
+  setHref("#mobileWhatsApp", waUrl);
 
-  $("#emailCard").href = profile.email ? `mailto:${profile.email}` : "#";
+  const mailUrl = profile.email ? `mailto:${profile.email}` : "#";
+  setHref("#emailCard", mailUrl);
+  setHref("#emailButton", mailUrl);
 
-  $("#websiteCard").href = profile.website || "#";
-  $("#mapsButton").onclick = () => {
-    const url = mapsUrl(profile);
-    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  const webUrl = profile.website || "#";
+  setHref("#websiteCard", webUrl);
+  setHref("#websiteButton", webUrl);
+
+  const mapsHandler = (e) => {
+    if (e) e.preventDefault();
+    const url = getMapsUrl(profile);
+    if (!url) {
+      showToast("Location is not configured.");
+      return;
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
   };
-  $("#locationCard").onclick = () => $("#mapsButton").click();
+
+  setClick("#mapsButton", mapsHandler);
+  setClick("#locationCard", mapsHandler);
 
   hideIfEmpty("contactSection", profile.phone || profile.email || profile.website);
-  hideIfEmpty("locationSection", profile.address || profile.latitude || profile.longitude);
+  hideIfEmpty("locationSection", profile.address || profile.mapsUrl);
 
   renderServices(profile.services);
   renderSocials(profile);
   renderBusinessCard(profile);
 
   const ogImage = $("#ogImage");
-  if (ogImage && profile.profileImage) ogImage.setAttribute("content", profile.profileImage);
+  if (ogImage && profile.profileImage) {
+    ogImage.setAttribute("content", profile.profileImage);
+  }
 
-  const description = document.querySelector('meta[name="description"]');
-  if (description) {
-    description.setAttribute(
+  const descriptionMeta = document.querySelector('meta[name="description"]');
+  if (descriptionMeta) {
+    descriptionMeta.setAttribute(
       "content",
       profile.description || `${profile.name} - ${profile.company || "Business Profile"}`
     );
@@ -183,20 +231,22 @@ function renderProfile(profile) {
 function renderServices(services = []) {
   const section = $("#servicesSection");
   const grid = $("#servicesGrid");
+  if (!grid) return;
+
   grid.innerHTML = "";
 
   if (!services.length) {
-    section.hidden = true;
+    if (section) section.hidden = true;
     return;
   }
 
-  section.hidden = false;
+  if (section) section.hidden = false;
 
-  services.forEach((service, index) => {
+  services.forEach((service) => {
     const item = document.createElement("div");
     item.className = "service-item";
     item.innerHTML = `
-      <span class="service-number">${String(index + 1).padStart(2, "0")}</span>
+      <span class="service-number">-</span>
       <span class="service-name"></span>
     `;
     item.querySelector(".service-name").textContent = service;
@@ -207,16 +257,17 @@ function renderServices(services = []) {
 function renderSocials(profile) {
   const section = $("#socialSection");
   const grid = $("#socialGrid");
-  grid.innerHTML = "";
+  if (!grid) return;
 
+  grid.innerHTML = "";
   const entries = socialEntries(profile);
 
   if (!entries.length) {
-    section.hidden = true;
+    if (section) section.hidden = true;
     return;
   }
 
-  section.hidden = false;
+  if (section) section.hidden = false;
 
   entries.forEach(({ label, icon, url }) => {
     const item = document.createElement("a");
@@ -227,7 +278,7 @@ function renderSocials(profile) {
     item.innerHTML = `
       <span class="social-icon">${icon}</span>
       <span class="social-name"></span>
-      <span class="arrow" style="margin-left:auto">↗</span>
+      <span class="social-arrow">↗</span>
     `;
     item.querySelector(".social-name").textContent = label;
     grid.appendChild(item);
@@ -237,6 +288,7 @@ function renderSocials(profile) {
 function renderBusinessCard(profile) {
   const section = $("#businessCardSection");
   const preview = $("#businessCardPreview");
+  if (!section || !preview) return;
 
   if (!profile.businessCardImage) {
     section.hidden = true;
@@ -245,42 +297,16 @@ function renderBusinessCard(profile) {
 
   section.hidden = false;
   preview.src = profile.businessCardImage;
-  preview.alt = `${profile.name} business visiting card`;
+  preview.alt = `${profile.name} business card`;
+
   preview.onerror = () => {
     section.hidden = true;
-    showToast("Business card image could not be loaded.");
   };
 }
 
-function buildVCardPhotoField(base64, mimeType) {
-  if (!base64) return "";
-  const extension = (mimeType || "image/jpeg").split("/")[1] || "jpeg";
-  return `PHOTO;ENCODING=b;TYPE=${extension.toUpperCase()}:${base64}`;
-}
-
-async function imageToBase64Data(imageUrl) {
-  try {
-    const response = await fetch(imageUrl, { cache: "no-cache" });
-    if (!response.ok) throw new Error("Image fetch failed");
-    const blob = await response.blob();
-
-    return await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = String(reader.result || "");
-        const comma = result.indexOf(",");
-        resolve({
-          base64: comma >= 0 ? result.slice(comma + 1) : "",
-          mimeType: blob.type || "image/jpeg"
-        });
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  } catch {
-    return { base64: "", mimeType: "" };
-  }
-}
+/* =====================================================
+   VCARD GENERATION & SAVING (FIXED PARSER & ENCODING)
+===================================================== */
 
 function escapeVCard(value) {
   return String(value || "")
@@ -294,11 +320,43 @@ function foldVCardLine(line) {
   const max = 72;
   const chars = Array.from(line);
   const lines = [];
+
   while (chars.length > max) {
     lines.push(chars.splice(0, max).join(""));
   }
-  if (chars.length) lines.push(chars.join(""));
+  if (chars.length) {
+    lines.push(chars.join(""));
+  }
   return lines.join("\r\n ");
+}
+
+async function imageToBase64Data(imageUrl) {
+  if (!imageUrl) return { base64: "", type: "" };
+
+  try {
+    const response = await fetch(imageUrl, { cache: "no-cache" });
+    if (!response.ok) throw new Error("Image fetch failed");
+    const blob = await response.blob();
+
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = String(reader.result || "");
+        const comma = result.indexOf(",");
+        let ext = (blob.type || "").split("/")[1] || "JPEG";
+        if (ext.toLowerCase() === "jpg") ext = "JPEG";
+
+        resolve({
+          base64: comma >= 0 ? result.slice(comma + 1) : "",
+          type: ext.toUpperCase()
+        });
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return { base64: "", type: "" };
+  }
 }
 
 async function generateVCard(profile) {
@@ -311,9 +369,12 @@ async function generateVCard(profile) {
     profile.website && `item4.URL:${escapeVCard(profile.website)}\r\nitem4.X-ABLabel:Website`
   ].filter(Boolean);
 
-  const photoLine = buildVCardPhotoField(photo.base64, photo.mimeType);
+  // Correct vCard 3.0 photo attribute format
+  const photoLine = photo.base64
+    ? `PHOTO;TYPE=${photo.type};ENCODING=b:${photo.base64}`
+    : "";
 
-  const raw = [
+  const lines = [
     "BEGIN:VCARD",
     "VERSION:3.0",
     `FN:${escapeVCard(profile.name)}`,
@@ -321,7 +382,7 @@ async function generateVCard(profile) {
     profile.company && `ORG:${escapeVCard(profile.company)}`,
     profile.title && `TITLE:${escapeVCard(profile.title)}`,
     profile.phone && `TEL;TYPE=CELL,VOICE:${escapeVCard(profile.phone)}`,
-    profile.whatsapp && `TEL;TYPE=WORK,VOICE:${escapeVCard(profile.whatsapp)}`,
+    profile.whatsapp && `TEL;TYPE=WORK,VOICE:+${formatWhatsAppNumber(profile.whatsapp)}`,
     profile.email && `EMAIL;TYPE=INTERNET:${escapeVCard(profile.email)}`,
     profile.address && `ADR;TYPE=WORK:;;${escapeVCard(profile.address)};;;`,
     profile.website && `URL:${escapeVCard(profile.website)}`,
@@ -329,97 +390,77 @@ async function generateVCard(profile) {
     ...socialLines,
     photoLine,
     "END:VCARD"
-  ].filter(Boolean).join("\r\n");
+  ].filter(Boolean);
 
-  return raw.split("\r\n").map(foldVCardLine).join("\r\n");
+  return lines.map(foldVCardLine).join("\r\n");
 }
 
 function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.rel = "noopener";
+
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 2500);
 }
 
 async function saveContact() {
-  const vcard = await generateVCard(businessProfile);
-  const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
-  downloadBlob(blob, safeFilename(businessProfile.name, ".vcf"));
-  showToast("Contact file created. Open it to save the contact.");
-}
-
-function getImageFileName(profile) {
-  const path = profile.businessCardImage.split("/").pop() || "";
-  const extensionMatch = path.match(/\.[a-z0-9]+$/i);
-  const ext = extensionMatch ? extensionMatch[0].toLowerCase() : ".png";
-  return safeFilename(profile.name, `-business-card${ext}`);
-}
-
-async function downloadExistingBusinessCard() {
-  if (!businessProfile.businessCardImage) return;
+  const buttons = [$("#saveContactButton"), $("#mobileSaveContact")].filter(Boolean);
+  const originalHTMLs = buttons.map((b) => b.innerHTML);
 
   try {
-    const response = await fetch(businessProfile.businessCardImage, { cache: "no-cache" });
-    if (!response.ok) throw new Error("Download failed");
-    const blob = await response.blob();
-    downloadBlob(blob, getImageFileName(businessProfile));
-    showToast("Business card image downloaded.");
-  } catch {
-    // Direct navigation is a useful same-origin fallback.
-    const a = document.createElement("a");
-    a.href = businessProfile.businessCardImage;
-    a.download = getImageFileName(businessProfile);
-    a.target = "_blank";
-    a.rel = "noopener";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    showToast("Opening the original business card image.");
-  }
-}
-
-async function shareExistingBusinessCard() {
-  const imageUrl = businessProfile.businessCardImage;
-  if (!imageUrl) return;
-
-  try {
-    const response = await fetch(imageUrl, { cache: "no-cache" });
-    if (!response.ok) throw new Error("Image fetch failed");
-    const blob = await response.blob();
-
-    const file = new File([blob], getImageFileName(businessProfile), {
-      type: blob.type || "image/png"
+    buttons.forEach((b) => {
+      b.disabled = true;
+      b.innerHTML = `<span>Preparing...</span>`;
     });
 
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: `${businessProfile.name} - Business Card`,
-        text: `${businessProfile.name}${businessProfile.company ? " - " + businessProfile.company : ""}`,
-        files: [file]
-      });
-      return;
+    const vcardString = await generateVCard(businessProfile);
+    const fileName = safeFilename(businessProfile.name, ".vcf");
+    const blob = new Blob([vcardString], { type: "text/vcard;charset=utf-8;" });
+    const file = new File([blob], fileName, { type: "text/vcard;charset=utf-8;" });
+
+    // Web Share API support check (Mobile Native Contacts Integration)
+    if (navigator.share && navigator.canShare) {
+      let canShareFile = false;
+      try {
+        canShareFile = navigator.canShare({ files: [file] });
+      } catch {
+        canShareFile = false;
+      }
+
+      if (canShareFile) {
+        await navigator.share({
+          title: businessProfile.name,
+          files: [file]
+        });
+        showToast("Contact shared. Open with Contacts to save.");
+        return;
+      }
     }
 
-    if (navigator.share) {
-      await navigator.share({
-        title: `${businessProfile.name} - Business Card`,
-        text: `${businessProfile.name}${businessProfile.company ? " - " + businessProfile.company : ""}`,
-        url: window.location.href
-      });
-      return;
-    }
-
-    await downloadExistingBusinessCard();
+    // Direct Browser Download Fallback
+    downloadBlob(blob, fileName);
+    showToast("Contact file downloaded. Tap file to save.");
   } catch (error) {
-    if (error?.name === "AbortError") return;
-    await downloadExistingBusinessCard();
+    if (error?.name !== "AbortError") {
+      showToast("Could not export contact file.");
+    }
+  } finally {
+    buttons.forEach((b, idx) => {
+      b.disabled = false;
+      b.innerHTML = originalHTMLs[idx];
+    });
   }
 }
+
+/* =====================================================
+   MEDIA SHARE & COPY HELPERS
+===================================================== */
 
 async function shareProfile() {
   const data = {
@@ -433,71 +474,106 @@ async function shareProfile() {
       await navigator.share(data);
       return;
     }
-    await navigator.clipboard.writeText(window.location.href);
-    showToast("Profile link copied.");
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(window.location.href);
+      showToast("Profile link copied to clipboard.");
+      return;
+    }
   } catch (error) {
     if (error?.name !== "AbortError") {
-      showToast("Could not share the profile.");
+      showToast("Could not share profile.");
     }
+  }
+}
+
+async function copyText(value) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+      showToast("Copied to clipboard.");
+      return;
+    }
+    const textarea = document.createElement("textarea");
+    textarea.value = value;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+    showToast("Copied to clipboard.");
+  } catch {
+    showToast("Copy unavailable.");
   }
 }
 
 function showToast(message) {
   const toast = $("#toast");
+  if (!toast) return;
+
   toast.textContent = message;
   toast.classList.add("show");
+
   clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove("show"), 2500);
+  showToast.timer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
 }
 
-async function copyText(value) {
-  try {
-    await navigator.clipboard.writeText(value);
-    showToast("Copied to clipboard.");
-  } catch {
-    showToast("Copy is not available in this browser.");
-  }
-}
+/* =====================================================
+   INTERACTION BINDINGS
+===================================================== */
 
 function setupInteractions() {
-  $("#saveContactButton").addEventListener("click", saveContact);
-  $("#mobileSaveContact").addEventListener("click", saveContact);
-  $("#downloadCardButton").addEventListener("click", downloadExistingBusinessCard);
-  $("#shareCardButton").addEventListener("click", shareExistingBusinessCard);
-  $("#shareProfileButton").addEventListener("click", shareProfile);
+  setClick("#saveContactButton", saveContact);
+  setClick("#mobileSaveContact", saveContact);
 
-  document.querySelectorAll("[data-copy-target]").forEach((btn) => {
-    btn.addEventListener("click", async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const target = document.getElementById(btn.dataset.copyTarget);
-      if (target?.textContent) await copyText(target.textContent);
-    });
-  });
+  setClick("#shareProfileButton", shareProfile);
+  setClick("#shareProfileTop", shareProfile);
 
-  const aboutCard = document.querySelector(".about-card");
-  const readMore = $("#readMoreButton");
-
-  // Show Read More only when the description is longer than the collapsed area.
-  requestAnimationFrame(() => {
-    const p = $("#description");
-    if (p.scrollHeight > p.clientHeight + 8) {
-      readMore.hidden = false;
+  setClick("#downloadCardButton", () => {
+    if (businessProfile.businessCardImage) {
+      const a = document.createElement("a");
+      a.href = businessProfile.businessCardImage;
+      a.download = safeFilename(businessProfile.name, "-business-card.png");
+      a.click();
     }
   });
 
-  readMore.addEventListener("click", () => {
-    const expanded = aboutCard.classList.toggle("expanded");
-    readMore.textContent = expanded ? "Show Less" : "Read More";
-  });
-
-  // Respect native mobile navigation for external/social links.
-  document.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      if (link.href === "#" || !link.href) return;
+  document.querySelectorAll("[data-copy-target]").forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const target = document.getElementById(button.dataset.copyTarget);
+      if (target && target.textContent) {
+        await copyText(target.textContent);
+      }
     });
   });
+
+  const aboutCard = document.querySelector(".about-panel");
+  const readMore = $("#readMoreButton");
+
+  if (aboutCard && readMore) {
+    const description = $("#description");
+    if (description && description.scrollHeight > description.clientHeight + 8) {
+      readMore.hidden = false;
+    }
+
+    readMore.addEventListener("click", () => {
+      const expanded = aboutCard.classList.toggle("expanded");
+      readMore.innerHTML = expanded
+        ? "Show Less <span>↑</span>"
+        : "Read More <span>→</span>";
+    });
+  }
 }
 
-renderProfile(businessProfile);
-setupInteractions();
+/* =====================================================
+   INITIALIZATION
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderProfile(businessProfile);
+  setupInteractions();
+});
