@@ -232,23 +232,18 @@ function renderServices(services = []) {
   const section = $("#servicesSection");
   const grid = $("#servicesGrid");
   if (!grid) return;
-
   grid.innerHTML = "";
 
   if (!services.length) {
     if (section) section.hidden = true;
     return;
   }
-
   if (section) section.hidden = false;
 
   services.forEach((service) => {
     const item = document.createElement("div");
     item.className = "service-item";
-    item.innerHTML = `
-      <span class="service-number">-</span>
-      <span class="service-name"></span>
-    `;
+    item.innerHTML = `<span class="service-number">-</span><span class="service-name"></span>`;
     item.querySelector(".service-name").textContent = service;
     grid.appendChild(item);
   });
@@ -258,15 +253,13 @@ function renderSocials(profile) {
   const section = $("#socialSection");
   const grid = $("#socialGrid");
   if (!grid) return;
-
   grid.innerHTML = "";
-  const entries = socialEntries(profile);
 
+  const entries = socialEntries(profile);
   if (!entries.length) {
     if (section) section.hidden = true;
     return;
   }
-
   if (section) section.hidden = false;
 
   entries.forEach(({ label, icon, url }) => {
@@ -275,11 +268,7 @@ function renderSocials(profile) {
     item.href = url;
     item.target = "_blank";
     item.rel = "noopener noreferrer";
-    item.innerHTML = `
-      <span class="social-icon">${icon}</span>
-      <span class="social-name"></span>
-      <span class="social-arrow">↗</span>
-    `;
+    item.innerHTML = `<span class="social-icon">${icon}</span><span class="social-name"></span><span class="social-arrow">↗</span>`;
     item.querySelector(".social-name").textContent = label;
     grid.appendChild(item);
   });
@@ -298,15 +287,42 @@ function renderBusinessCard(profile) {
   section.hidden = false;
   preview.src = profile.businessCardImage;
   preview.alt = `${profile.name} business card`;
-
-  preview.onerror = () => {
-    section.hidden = true;
-  };
+  preview.onerror = () => { section.hidden = true; };
 }
 
 /* =====================================================
-   VCARD GENERATION & SAVING (FIXED PARSER & ENCODING)
+   VCARD GENERATION & SAVING (SYNCHRONOUS FIX)
 ===================================================== */
+
+// Global cache for the photo to ensure saveContact runs synchronously 
+let cachedVCardPhoto = { base64: "", type: "" };
+
+async function preloadVCardPhoto() {
+  const imageUrl = businessProfile.vcardPhoto || businessProfile.profileImage;
+  if (!imageUrl) return;
+
+  try {
+    const response = await fetch(imageUrl, { cache: "force-cache" });
+    if (!response.ok) return;
+    const blob = await response.blob();
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      const comma = result.indexOf(",");
+      let ext = (blob.type || "").split("/")[1] || "JPEG";
+      if (ext.toLowerCase() === "jpg") ext = "JPEG";
+
+      cachedVCardPhoto = {
+        base64: comma >= 0 ? result.slice(comma + 1) : "",
+        type: ext.toUpperCase()
+      };
+    };
+    reader.readAsDataURL(blob);
+  } catch (e) {
+    console.warn("Failed to preload vCard photo", e);
+  }
+}
 
 function escapeVCard(value) {
   return String(value || "")
@@ -320,48 +336,15 @@ function foldVCardLine(line) {
   const max = 72;
   const chars = Array.from(line);
   const lines = [];
-
   while (chars.length > max) {
     lines.push(chars.splice(0, max).join(""));
   }
-  if (chars.length) {
-    lines.push(chars.join(""));
-  }
+  if (chars.length) lines.push(chars.join(""));
   return lines.join("\r\n ");
 }
 
-async function imageToBase64Data(imageUrl) {
-  if (!imageUrl) return { base64: "", type: "" };
-
-  try {
-    const response = await fetch(imageUrl, { cache: "no-cache" });
-    if (!response.ok) throw new Error("Image fetch failed");
-    const blob = await response.blob();
-
-    return await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = String(reader.result || "");
-        const comma = result.indexOf(",");
-        let ext = (blob.type || "").split("/")[1] || "JPEG";
-        if (ext.toLowerCase() === "jpg") ext = "JPEG";
-
-        resolve({
-          base64: comma >= 0 ? result.slice(comma + 1) : "",
-          type: ext.toUpperCase()
-        });
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  } catch {
-    return { base64: "", type: "" };
-  }
-}
-
-async function generateVCard(profile) {
-  const photo = await imageToBase64Data(profile.vcardPhoto || profile.profileImage);
-
+// Removed async keyword to prevent gesture loss
+function generateVCard(profile) {
   const socialLines = [
     profile.instagram && `item1.URL:${escapeVCard(profile.instagram)}\r\nitem1.X-ABLabel:Instagram`,
     profile.facebook && `item2.URL:${escapeVCard(profile.facebook)}\r\nitem2.X-ABLabel:Facebook`,
@@ -369,9 +352,8 @@ async function generateVCard(profile) {
     profile.website && `item4.URL:${escapeVCard(profile.website)}\r\nitem4.X-ABLabel:Website`
   ].filter(Boolean);
 
-  // Correct vCard 3.0 photo attribute format
-  const photoLine = photo.base64
-    ? `PHOTO;TYPE=${photo.type};ENCODING=b:${photo.base64}`
+  const photoLine = cachedVCardPhoto.base64
+    ? `PHOTO;TYPE=${cachedVCardPhoto.type};ENCODING=b:${cachedVCardPhoto.base64}`
     : "";
 
   const lines = [
@@ -398,63 +380,33 @@ async function generateVCard(profile) {
 function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
+  anchor.style.display = "none";
   anchor.href = url;
   anchor.download = filename;
-  anchor.rel = "noopener";
-
+  
   document.body.appendChild(anchor);
   anchor.click();
-  anchor.remove();
-
-  setTimeout(() => URL.revokeObjectURL(url), 2500);
+  
+  // Cleanup safely
+  setTimeout(() => {
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+  }, 3000);
 }
 
-async function saveContact() {
-  const buttons = [$("#saveContactButton"), $("#mobileSaveContact")].filter(Boolean);
-  const originalHTMLs = buttons.map((b) => b.innerHTML);
-
+// Completely Synchronous saveContact implementation
+function saveContact() {
   try {
-    buttons.forEach((b) => {
-      b.disabled = true;
-      b.innerHTML = `<span>Preparing...</span>`;
-    });
-
-    const vcardString = await generateVCard(businessProfile);
+    const vcardString = generateVCard(businessProfile);
     const fileName = safeFilename(businessProfile.name, ".vcf");
-    const blob = new Blob([vcardString], { type: "text/vcard;charset=utf-8;" });
-    const file = new File([blob], fileName, { type: "text/vcard;charset=utf-8;" });
-
-    // Web Share API support check (Mobile Native Contacts Integration)
-    if (navigator.share && navigator.canShare) {
-      let canShareFile = false;
-      try {
-        canShareFile = navigator.canShare({ files: [file] });
-      } catch {
-        canShareFile = false;
-      }
-
-      if (canShareFile) {
-        await navigator.share({
-          title: businessProfile.name,
-          files: [file]
-        });
-        showToast("Contact shared. Open with Contacts to save.");
-        return;
-      }
-    }
-
-    // Direct Browser Download Fallback
+    
+    // Create Blob directly and force a native download
+    const blob = new Blob([vcardString], { type: "text/vcard" });
     downloadBlob(blob, fileName);
-    showToast("Contact file downloaded. Tap file to save.");
+    
+    showToast("Contact file downloaded. Open to save.");
   } catch (error) {
-    if (error?.name !== "AbortError") {
-      showToast("Could not export contact file.");
-    }
-  } finally {
-    buttons.forEach((b, idx) => {
-      b.disabled = false;
-      b.innerHTML = originalHTMLs[idx];
-    });
+    showToast("Could not export contact file.");
   }
 }
 
@@ -510,14 +462,10 @@ async function copyText(value) {
 function showToast(message) {
   const toast = $("#toast");
   if (!toast) return;
-
   toast.textContent = message;
   toast.classList.add("show");
-
   clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
+  showToast.timer = setTimeout(() => { toast.classList.remove("show"); }, 3000);
 }
 
 /* =====================================================
@@ -576,4 +524,6 @@ function setupInteractions() {
 document.addEventListener("DOMContentLoaded", () => {
   renderProfile(businessProfile);
   setupInteractions();
+  // Preload the vCard photo silently in the background
+  preloadVCardPhoto();
 });
