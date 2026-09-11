@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <meta name="description" content="Digital Business Card - Tap, Connect & Save">
-  <meta property="og:title" content="Parishar Rajbhandari | Digital Business Card">
-  <meta property="og:description" content="Connect with Parishar Rajbhandari - Hamro Trading Concern Pvt. Ltd.">
-  <title>Tappaa | Digital Business Card</title>
+  <meta property="og:title" content="Digital Business Card">
+  <meta property="og:description" content="Connect, call, message and save this business profile.">
+  <meta property="og:type" content="profile">
+  <meta property="og:image" content="" id="ogImage">
+  <title>Digital Business Card</title>
 
   <!-- Google Fonts: Plus Jakarta Sans for modern grotesque typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,8 +32,8 @@
       <!-- Top Quick Header / Brand Bar -->
       <header class="top-nav">
         <div class="top-brand">
-          <span class="brand-pill" id="brandPill">Tappa</span>
-          <span class="brand-title" id="brandCompany">TAPPA</span>
+          <span class="brand-pill" id="brandPill"></span>
+          <span class="brand-title" id="brandCompany"></span>
         </div>
         <button id="shareProfileButton" class="share-btn" type="button" aria-label="Share profile" title="Share profile">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -52,7 +54,7 @@
         <div class="card-visual-row">
           <!-- Portrait photo with smooth rounded corners -->
           <div class="photo-container">
-            <img id="profileImage" src="assets/profile/parishar.jpeg" alt="Parishar Rajbhandari">
+            <img id="profileImage" alt="Profile photo">
           </div>
 
           <!-- Right side vertical column (social icons + handle + divider + logo) -->
@@ -85,7 +87,7 @@
 
             <!-- Rotated vertical handle text -->
             <div class="rail-handle-wrap">
-              <span id="heroHandle" class="rail-handle">@email</span>
+              <span id="heroHandle" class="rail-handle"></span>
             </div>
 
             <!-- Vertical separator line -->
@@ -93,8 +95,8 @@
 
             <!-- Brand Logo / Monogram at the bottom of the rail -->
             <div class="rail-logo-box">
-              <img id="brandLogoImg" src="assets/logos/company_logo.png" alt="Brand Logo">
-              <span id="brandLogoText" class="rail-logo-text" hidden>htc</span>
+              <img id="brandLogoImg" alt="Brand Logo">
+              <span id="brandLogoText" class="rail-logo-text" hidden></span>
             </div>
           </aside>
         </div>
@@ -102,10 +104,10 @@
         <!-- Name & Headline Block -->
         <div class="identity-block">
           <h1 class="person-name">
-            <span id="nameFirst" class="name-bold">firstname</span>
-            <span id="nameLast" class="name-spaced">lastname</span>
+            <span id="nameFirst" class="name-bold"></span>
+            <span id="nameLast" class="name-spaced"></span>
           </h1>
-          <p id="personTitle" class="person-sub">post &bull; Tappa</p>
+          <p id="personTitle" class="person-sub"></p>
 
           <!-- Crisp black horizontal accent divider -->
           <div class="card-divider"></div>
@@ -118,7 +120,7 @@
             <div class="info-label">Address</div>
             <div class="info-value">
               <a id="addressLink" href="#" class="info-link">
-                <span id="addressValue">Chitwan, Nepal</span>
+                <span id="addressValue"></span>
               </a>
             </div>
           </div>
@@ -129,18 +131,18 @@
             <div class="info-value contact-details">
               <div class="contact-line">
                 <span class="contact-tag">Mobile:</span>
-                <a id="phoneValueLink" href="tel:+9779800000000"><span id="phoneValue">+977 9800000000</span></a>
+                <a id="phoneValueLink" href="#"><span id="phoneValue"></span></a>
               </div>
               <div class="contact-line">
                 <span class="contact-tag">WhatsApp:</span>
-                <a id="whatsappValueLink" href="#" target="_blank" rel="noopener noreferrer"><span id="whatsappValue">+977 9800000000</span></a>
+                <a id="whatsappValueLink" href="#" target="_blank" rel="noopener noreferrer"><span id="whatsappValue"></span></a>
               </div>
               <div class="contact-line">
-                <a id="emailValueLink" href="mailto:email@gmail.com"><span id="emailValue">email@gmail.com</span></a>
+                <a id="emailValueLink" href="#"><span id="emailValue"></span></a>
               </div>
               <div class="contact-line">
-                <a id="websiteValueLink" href="https://demo-profile-2.vercel.app" target="_blank" rel="noopener noreferrer">
-                  <span id="websiteValue">demo-profile-2.vercel.app</span>
+                <a id="websiteValueLink" href="#" target="_blank" rel="noopener noreferrer">
+                  <span id="websiteValue"></span>
                 </a>
               </div>
             </div>
@@ -173,10 +175,8 @@
             <h2>About</h2>
           </div>
           <div class="about-content">
-            <blockquote id="tagline" class="about-tagline">"Tagline"</blockquote>
-            <p id="description" class="about-text">
-              Description
-            </p>
+            <blockquote id="tagline" class="about-tagline"></blockquote>
+            <p id="description" class="about-text"></p>
             <button id="readMoreButton" class="read-more-btn" type="button" hidden>Read More &rarr;</button>
           </div>
         </section>
@@ -207,8 +207,8 @@
             </div>
             <div class="location-info">
               <span class="location-eyebrow">HEADQUARTERS</span>
-              <strong id="locationText" class="location-name">Chitwan, Nepal</strong>
-              <p class="location-sub">Tappoo</p>
+              <strong id="locationText" class="location-name"></strong>
+              <p id="locationSub" class="location-sub"></p>
             </div>
           </div>
           <button id="mapsButton" class="btn btn-outline full-width" type="button">
@@ -228,7 +228,7 @@
           </div>
           <div class="connect-list">
             <div class="connect-item">
-              <a id="phoneCard" class="connect-link" href="tel:+9779800000000">
+              <a id="phoneCard" class="connect-link" href="#">
                 <div class="connect-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
@@ -236,7 +236,7 @@
                 </div>
                 <div class="connect-detail">
                   <small>Call Direct</small>
-                  <strong>+977 9800000000</strong>
+                  <strong id="phoneCardValue"></strong>
                 </div>
               </a>
               <button class="copy-btn" type="button" data-copy-target="phoneValue" aria-label="Copy phone" title="Copy">
@@ -256,7 +256,7 @@
                 </div>
                 <div class="connect-detail">
                   <small>WhatsApp Chat</small>
-                  <strong>+977 9800000000</strong>
+                  <strong id="whatsappCardValue"></strong>
                 </div>
               </a>
               <button class="copy-btn" type="button" data-copy-target="whatsappValue" aria-label="Copy WhatsApp" title="Copy">
@@ -268,7 +268,7 @@
             </div>
 
             <div class="connect-item">
-              <a id="emailCard" class="connect-link" href="mailto:email@gmail.com">
+              <a id="emailCard" class="connect-link" href="#">
                 <div class="connect-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -277,7 +277,7 @@
                 </div>
                 <div class="connect-detail">
                   <small>Email Address</small>
-                  <strong>email@gmail.com</strong>
+                  <strong id="emailCardValue"></strong>
                 </div>
               </a>
               <button class="copy-btn" type="button" data-copy-target="emailValue" aria-label="Copy email" title="Copy">
@@ -289,7 +289,7 @@
             </div>
 
             <div class="connect-item">
-              <a id="websiteCard" class="connect-link" href="https://demo-profile-2.vercel.app" target="_blank" rel="noopener noreferrer">
+              <a id="websiteCard" class="connect-link" href="#" target="_blank" rel="noopener noreferrer">
                 <div class="connect-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -299,7 +299,7 @@
                 </div>
                 <div class="connect-detail">
                   <small>Website Portfolio</small>
-                  <strong>demo-profile-2.vercel.app</strong>
+                  <strong id="websiteCardValue"></strong>
                 </div>
               </a>
               <span class="connect-arrow">&nearr;</span>
@@ -325,7 +325,7 @@
             <h2>Visiting Card</h2>
           </div>
           <div class="visiting-card-box">
-            <img id="businessCardPreview" src="assets/business-cards/business_card.png" alt="Business Visiting Card">
+            <img id="businessCardPreview" alt="Business Visiting Card">
           </div>
           <div class="dual-buttons">
             <button id="downloadCardButton" class="btn btn-solid" type="button">
@@ -341,10 +341,10 @@
         <section class="cta-banner">
           <div class="cta-banner-content">
             <span class="cta-banner-num">08</span>
-            <h3 id="ctaText">Let's create something meaningful together.</h3>
+            <h3 id="ctaText"></h3>
           </div>
           <div class="cta-banner-actions">
-            <a id="ctaCallButton" class="btn btn-white" href="tel:+9779800000000">
+            <a id="ctaCallButton" class="btn btn-white" href="#">
               <span>Call Now</span>
             </a>
             <a id="ctaWhatsAppButton" class="btn btn-ghost" href="#" target="_blank" rel="noopener noreferrer">
@@ -356,11 +356,11 @@
         <!-- Footer -->
         <footer class="site-footer">
           <div class="footer-top">
-            <strong id="footerCompany">Tappoo</strong>
-            <span>Tappoo Digital Profile</span>
+            <strong id="footerCompany"></strong>
+            <span id="footerTagline"></span>
           </div>
           <div class="footer-sub">
-            &copy; <span id="currentYear">2026</span> All rights reserved.
+            &copy; <span id="currentYear"></span> All rights reserved.
           </div>
         </footer>
 
@@ -370,7 +370,7 @@
 
   <!-- Mobile Floating Thumb Dock for instant tap actions -->
   <nav class="floating-dock" aria-label="Quick Actions">
-    <a id="dockCall" href="tel:+9779800000000" aria-label="Call">
+    <a id="dockCall" href="#" aria-label="Call">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
       </svg>
